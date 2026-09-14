@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily DoorDash deal scan
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/deal-scanner
+ExecStart=/home/ubuntu/deal-scanner/daily_scan.sh
+TimeoutStartSec=3h

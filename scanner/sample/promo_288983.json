@@ -1,0 +1,17 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"cart_uuid\":\"\",\"store_id\":\"288983\",\"promotions\":[],\"total\":0,\"success\":true,\"message\":\"Found 0 eligible promotions\"}"
+    }
+  ],
+  "structuredContent": {
+    "cart_uuid": "",
+    "store_id": "288983",
+    "promotions": [],
+    "total": 0,
+    "success": true,
+    "message": "Found 0 eligible promotions"
+  },
+  "isError": false
+}

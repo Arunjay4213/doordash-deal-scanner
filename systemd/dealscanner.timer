@@ -1,0 +1,10 @@
+[Unit]
+Description=Run the daily DoorDash deal scan at 11:30 America/Chicago
+
+[Timer]
+OnCalendar=*-*-* 11:30:00 America/Chicago
+Persistent=true
+Unit=dealscanner.service
+
+[Install]
+WantedBy=timers.target

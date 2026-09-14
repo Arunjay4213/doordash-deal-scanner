@@ -1,0 +1,40 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"cart_uuid\":\"\",\"store_id\":\"1062843\",\"promotions\":[{\"code\":\"15a469e6-1040-49ea-81c7-8a8ec35ec083\",\"campaign_id\":\"15a469e6-1040-49ea-81c7-8a8ec35ec083\",\"ad_group_id\":\"d9417edc-0783-40bb-8c3c-3a36c8e04728\",\"ad_id\":\"f7914b72-ff4c-490d-97d5-0d31d9065c70\",\"title\":\"Spend $30, save $6\",\"description\":\"$6 off orders over $30.\",\"discount_cents\":0,\"is_applied\":false,\"source\":\"wallet\"},{\"code\":\"8e452e42-9fde-4bd9-9478-298773ce4243\",\"campaign_id\":\"8e452e42-9fde-4bd9-9478-298773ce4243\",\"ad_group_id\":\"9dd8ea91-4110-45a8-ac09-d86c236a5f10\",\"ad_id\":\"4e5afe23-d048-41a4-9e08-c7f950ec1d1e\",\"title\":\"Spend $35, save $7\",\"description\":\"$7 off orders over $35.\",\"discount_cents\":0,\"is_applied\":false,\"source\":\"wallet\"}],\"total\":2,\"success\":true,\"message\":\"Found 2 eligible promotions\"}"
+    }
+  ],
+  "structuredContent": {
+    "cart_uuid": "",
+    "store_id": "1062843",
+    "promotions": [
+      {
+        "code": "15a469e6-1040-49ea-81c7-8a8ec35ec083",
+        "campaign_id": "15a469e6-1040-49ea-81c7-8a8ec35ec083",
+        "ad_group_id": "d9417edc-0783-40bb-8c3c-3a36c8e04728",
+        "ad_id": "f7914b72-ff4c-490d-97d5-0d31d9065c70",
+        "title": "Spend $30, save $6",
+        "description": "$6 off orders over $30.",
+        "discount_cents": 0,
+        "is_applied": false,
+        "source": "wallet"
+      },
+      {
+        "code": "8e452e42-9fde-4bd9-9478-298773ce4243",
+        "campaign_id": "8e452e42-9fde-4bd9-9478-298773ce4243",
+        "ad_group_id": "9dd8ea91-4110-45a8-ac09-d86c236a5f10",
+        "ad_id": "4e5afe23-d048-41a4-9e08-c7f950ec1d1e",
+        "title": "Spend $35, save $7",
+        "description": "$7 off orders over $35.",
+        "discount_cents": 0,
+        "is_applied": false,
+        "source": "wallet"
+      }
+    ],
+    "total": 2,
+    "success": true,
+    "message": "Found 2 eligible promotions"
+  },
+  "isError": false
+}

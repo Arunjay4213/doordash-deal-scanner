@@ -1,0 +1,12 @@
+campaign_id	store_id	confirmed_date	status	evidence
+5423d154-f967-4e2f-866e-03e8621d232e	1150945	2026-08-10	confirmed	preview subtotal 14.50 discount -3.63 = 25.03% (25% off on $12+, cap $8 not reached)
+24e871fb-a60c-4df5-846c-ecdced65258a	25060900	2026-08-10	confirmed	preview subtotal 12.99 discount -3.25 = 25.02% (25% off on $12+)
+41e036c1-bf6a-4344-aa01-18781b6e0669	36042509	2026-08-10	confirmed	preview subtotal 14.78 discount -7.39 = exactly 50% (BOGO); store lists two identical "Buy 1, get 1 free" campaigns, preview did not name which id attached
+a1b05fe4-5986-482f-b23e-b2be3363dbf9	36042509	2026-08-10	confirmed	duplicate record of the same confirmed BOGO offer as 41e036c1 (see note above)
+369d9447-4829-4058-93bb-fc779f1b73f9	34162385	2026-08-10	confirmed	preview subtotal 26.18 discount -10.89 = one free medium 2-topping pizza (BOGO, delivery only)
+c4a4c3b8-f122-4af4-bf1f-e02091c3a061	23460971	2026-08-10	confirmed	preview subtotal 16.25 discount -3.25 = 20.00% (20% off on $15+)
+d93be74c-1dde-4df1-b6be-7908c86630d8	31578047	2026-08-10	confirmed	preview subtotal 15.50 discount -5.00 = flat $5 (Spend $15, save $5)
+63be9e3c-7955-4112-9867-429e79dea145	1189168	2026-08-10	confirmed	preview subtotal 15.90 discount -3.18 = 20.00% (20% off on $15+)
+6d9f0a2f-e359-491a-9cdd-21311f50d8f1	289066	2026-08-10	confirmed	preview subtotal 16.00 discount -3.20 = 20.00% (20% off on $15+)
+6907c721-8df9-47e7-ab63-98e00ec36905	600627	2026-08-10	confirmed	preview subtotal 17.80 discount -3.56 = 20.00% (20% off on $15+)
+b43e04f0-25f2-4487-891d-c4b44a7c8365	23235357	2026-08-10	refuted	dd-cli-issues.md defect 18: promo apply returned promo_not_attached; preview subtotal 20.00 landed with discount 0.00 (predicted 11.61-13.71, actual 22.16)

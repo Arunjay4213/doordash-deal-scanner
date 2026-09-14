@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+# raw scan envelopes and per-run state (large, regenerated daily)
+scan-*/
+state/
+logs/
+*.log
+# local secrets and tokens
+.dd_token
+*.pem
+.env
