@@ -403,6 +403,10 @@ using the Write tool. No markdown, no commentary outside that file.
 EOF
 
 cd "$BASE" || exit 1
+# Clear any body left by an earlier attempt today. The day allows up to 3
+# attempts, and a stale file from a failed one would sail through the "did the
+# model write a report" check below, get mailed again, and mark the day done.
+rm -f "$BODY"
 CLAUDE_OUT=$($CLAUDE -p --model claude-opus-5 --permission-mode bypassPermissions "$PROMPT" 2>&1)
 CLAUDE_RC=$?
 log "claude rc=$CLAUDE_RC"
@@ -444,15 +448,12 @@ fi
 log "stage 5: send via gmail smtp"
 # Surface an imminent token expiry in the report he already reads, rather than
 # as one more separate mail.
-# Prepend at most once. A re-run on the same day can reach here with a body that
-# already carries the NOTE - stage 4 only overwrites the body when the model
-# actually writes one, so a failed re-run leaves the previous run's file in place
-# and the NOTE was being stacked on top of itself (state/email_body_2026-08-24.txt
-# ended up with it on lines 1 and 3).
-# The test matches the fixed prefix rather than "$TOKEN_WARN" itself, because the
-# "expires in Nh" count differs between runs and an exact compare would never
-# match. The cost of that is that a re-run keeps the earlier run's hour count,
-# which is a few hours stale at worst - much better than printing it twice.
+# Prepend at most once. Stage 4 now deletes the body before invoking the model, so
+# a re-run can no longer inherit the previous attempt's file and stack the NOTE on
+# top of itself the way it once did (state/email_body_2026-08-24.txt ended up with
+# it on lines 1 and 3). The grep below is kept as a cheap guard; it matches the
+# fixed prefix rather than "$TOKEN_WARN" itself because the "expires in Nh" count
+# differs between runs, so an exact compare would never match.
 if [ -n "$TOKEN_WARN" ] && [ -f "$BODY" ] \
    && ! grep -q '^NOTE: the dd-cli token expires' "$BODY"; then
     { echo "$TOKEN_WARN"; echo; cat "$BODY"; } > "$BODY.warn" && mv "$BODY.warn" "$BODY"
