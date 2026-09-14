@@ -83,6 +83,25 @@ else
     log "WARN: /home/ubuntu/.dd_token missing or unreadable; dd-cli will fail"
 fi
 
+# Stage 4 needs its own long-lived Claude credential. The interactive Claude Code
+# login on this box uses a refresh token that expired on 2026-09-11 and silently
+# emptied ~/.claude/.credentials.json, so stage 4 failed with "OAuth session
+# expired" while the script still marked the day done. A token from
+# `claude setup-token` does not expire on its own; keep it in
+# ~/.claude_oauth_token, chmod 600, and source it the same way as the dd token.
+if [ -r /home/ubuntu/.claude_oauth_token ]; then
+    # shellcheck disable=SC1091
+    . /home/ubuntu/.claude_oauth_token
+    if [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ]; then
+        export CLAUDE_CODE_OAUTH_TOKEN
+        log "claude oauth token loaded from ~/.claude_oauth_token"
+    else
+        log "WARN: ~/.claude_oauth_token did not set CLAUDE_CODE_OAUTH_TOKEN; stage 4 will fall back to the box's own Claude login, which expires"
+    fi
+else
+    log "WARN: /home/ubuntu/.claude_oauth_token missing or unreadable; stage 4 will fall back to the box's own Claude login, which expires"
+fi
+
 # Pre-flight on the token. An expired token is the single most common cause of
 # a failed scan and it is silent: every one of the 136 fetches fails the same
 # way, eight minutes in. Decode the JWT expiry up front instead - fail fast and
@@ -389,16 +408,35 @@ CLAUDE_RC=$?
 log "claude rc=$CLAUDE_RC"
 log "claude output:"$'\n'"$CLAUDE_OUT"
 
+# Did stage 4 actually produce a report? Tracked separately from "did we send
+# mail", because a fallback body is still worth mailing but must not count as a
+# good run - see the marker at the end.
+STAGE4_OK=1
+
 # The model writes the body to a file. If it did not, fall back to its stdout so
-# the run still delivers something rather than silently sending nothing.
+# the run still delivers something rather than silently sending nothing. Lead
+# with an explicit failure line so the reader is not left to guess why the mail
+# looks like raw model output instead of a report.
 if [ ! -s "$BODY" ]; then
     log "WARN: no email body file, falling back to claude stdout"
-    if [ -n "$CLAUDE_OUT" ]; then
-        printf '%s\n' "$CLAUDE_OUT" > "$BODY"
-    else
-        printf 'Deal scan for %s produced no report.\nclaude exit code: %s\nSee logs/%s.log\n' \
-            "$DATE_CHI" "$CLAUDE_RC" "$DATE_CHI" > "$BODY"
-    fi
+    STAGE4_OK=0
+    {
+        printf 'SCAN FAILED at the model step (stage 4), claude exit code %s.\n\n' "$CLAUDE_RC"
+        if [ -n "$CLAUDE_OUT" ]; then
+            printf '%s\n' "$CLAUDE_OUT"
+        else
+            printf 'Deal scan for %s produced no report.\nclaude exit code: %s\nSee logs/%s.log\n' \
+                "$DATE_CHI" "$CLAUDE_RC" "$DATE_CHI"
+        fi
+    } > "$BODY"
+fi
+
+# A nonzero exit is a failed run even when a body file exists: the model may have
+# written a partial report before dying. Mail whatever it wrote, but do not let
+# the day be marked done on it.
+if [ "$CLAUDE_RC" -ne 0 ]; then
+    STAGE4_OK=0
+    log "WARN: claude exited $CLAUDE_RC; sending the body anyway but not counting the run as good"
 fi
 
 # ------------------------------------------- stage 5: send
@@ -423,7 +461,14 @@ MAIL_OUT=$("$BASE/send_mail.sh" "[dealbox] DoorDash deals - $DATE_CHI" "$BODY" 2
 MAIL_RC=$?
 log "send rc=$MAIL_RC:"$'\n'"$MAIL_OUT"
 
-# Only now is the day genuinely done. See the MARKER comment at the top.
-: > "$MARKER"
+# Only a run that got a real report out of stage 4 is genuinely done. See the
+# MARKER comment at the top: the marker blocks every further attempt today, so a
+# stage 4 failure must leave it unwritten and let the attempts counter decide how
+# many more retries the day gets.
+if [ "$STAGE4_OK" -eq 1 ]; then
+    : > "$MARKER"
+else
+    log "stage 4 failed; not writing the day marker so a later attempt today can retry (attempt $ATTEMPT_N of $MAX_ATTEMPTS)"
+fi
 log "=== scan end ==="
 exit 0
